@@ -1,0 +1,210 @@
+\documentclass[11pt]{article}
+
+% Information
+\newcommand{\Auteur}{Antoine Allard}
+\newcommand{\Titre}{An incomplete bibliography of network geometry}
+
+% Dimensions
+\usepackage[margin=1.5cm,letterpaper,includehead,includefoot]{geometry}
+\setlength{\parskip}{\baselineskip}
+\setlength{\parindent}{0pt}
+
+% Sans-serif font.
+\usepackage{lmodern}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[T1]{fontenc}
+
+% Mathematical symbols.
+\usepackage{amssymb}
+
+% To change the style of sections, subsections, etc.
+% https://tex.stackexchange.com/questions/53338/reducing-spacing-after-headings
+\usepackage{titlesec}
+  \titleformat*{\subsection}{\bfseries}
+  \titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{-4pt plus 2pt minus 2pt}
+  \titlespacing\subsection{0pt}{8pt plus 4pt minus 2pt}{-8pt plus 2pt minus 2pt}
+
+% To extract the date when compiling.
+\usepackage[showseconds=false]{datetime2}
+\newcommand{\Date}{\DTMtoday}
+
+% Custom colors.
+\usepackage{color}
+  \definecolor{seaborn_deep_blue}{RGB}{76, 114, 176}
+  \definecolor{seaborn_deep_orange}{RGB}{221, 132, 82}
+  \definecolor{seaborn_deep_green}{RGB}{85, 168, 104}
+  \definecolor{seaborn_deep_red}{RGB}{196, 78, 82}
+
+% Hypertext links and detailled information in PDF file.
+\usepackage[colorlinks=true,
+            allcolors=seaborn_deep_blue,
+            pdfauthor={{\Auteur}},
+            pdftitle={{\Titre}}]{hyperref}
+
+% Accents and special characters.
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+
+% Custom headers and footers.
+\usepackage{fancyhdr}
+  \fancyhead{}
+  \fancyhead[L]{\small\Titre}
+  \fancyhead[R]{\small\Auteur}
+  \renewcommand{\headrulewidth}{0.5pt}
+
+% Nicer format for references.
+% Empty bibliography for no reason whatsoever? -> rm -rf `biber --cache`
+\usepackage[style=phys,
+            biblabel=brackets,
+            backend=biber,
+            autocite=plain,
+            hyperref=true,
+            giveninits=true,
+            sorting=nyt,
+            refsection=none,
+            arxiv=abs,
+            eprint=true,
+            defernumbers=true,
+            sortcites=true,
+            maxnames=2,
+            isbn=false]{biblatex}
+\renewcommand*{\bibfont}{\footnotesize}
+\DeclareFieldFormat[article]{title}{\textit{#1}}
+\DeclareFieldFormat{titlecase}{#1}
+\addbibresource{references.bib}
+\setlength\bibitemsep{0.1\baselineskip}  % https://tex.stackexchange.com/questions/17360/reduce-spacing-in-bibliography-using-biblatex
+
+% Removes the table of contents' header
+% https://tex.stackexchange.com/questions/55080/how-to-hide-the-table-of-contents-heading
+\makeatletter
+\renewcommand\tableofcontents{\@starttoc{toc}}
+\makeatother
+
+% To include unnumbered sections, subsection, etc. in the table of contents.
+% https://stackoverflow.com/questions/4002329/how-to-make-chapter-section-and-subsection-appear-in-the-table-of-contents
+% https://tex.stackexchange.com/questions/364010/hyperref-and-titlesec-conflict-and-warning
+\newcommand\nouvellesection[1]{%
+  \phantomsection
+  \section*{#1}%
+  \addcontentsline{toc}{section}{#1}%
+}
+
+\newcommand\nouvellesoussection[1]{%
+  \phantomsection
+  \subsection*{#1}%
+  \addcontentsline{toc}{subsection}{#1}%
+}
+
+% https://tex.stackexchange.com/questions/471424/how-to-make-biblatex-biber-aware-of-url-field-in-phdthesis
+\newbibmacro{string+doiurlisbn}[1]{%
+  \iffieldundef{doi}{%
+    \iffieldundef{url}{%
+          #1%
+    }{%
+      \href{\thefield{url}}{#1}%
+    }%
+  }{%
+    \href{http://dx.doi.org/\thefield{doi}}{#1}%
+  }%
+}
+
+\renewbibmacro*{maintitle+booktitle}[1]{\addspace\thefield{booktitle}}
+
+\DeclareFieldFormat
+  [inproceedings]
+  {booktitle}{\usebibmacro{maintitle+booktitle}{#1\isdot}}
+
+
+% \DeclareFieldFormat{title}{%
+%   \usebibmacro{string+doiurlisbn}{\mkbibemph{#1}}}
+\DeclareFieldFormat
+  [book,inbook,incollection,inproceedings,patent,thesis,unpublished]
+  {title}{\usebibmacro{string+doiurlisbn}{\textit{#1\isdot}}}
+% \DeclareFieldFormat
+%   [suppbook,suppcollection,suppperiodical]
+%   {title}{\usebibmacro{string+doiurlisbn}{#1}}
+
+
+
+\begin{document}
+
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+\textbf{\Large\Titre}\\
+\Auteur\\
+\textit{\small Compiled on \Date}
+\vspace{\baselineskip}
+
+\setlength{\parskip}{0.1\baselineskip}
+\tableofcontents
+\setlength{\parskip}{\baselineskip}
+
+
+\nocite{*}
+
+
+\newpage
+
+\nouvellesection{The \texorpdfstring{$\mathbb{S}^1$}{S1} and \texorpdfstring{$\mathbb{H}^2$}{H2} models, their applications, and their variants}
+
+\nouvellesoussection{Models of undirected graphs}
+\printbibliography[type=article,keyword=undirected_graphs,heading=none]
+
+\nouvellesoussection{Models of bipartite graphs}
+\printbibliography[type=article,keyword=bipartite_graphs,heading=none]
+
+\nouvellesoussection{Models of directed graphs}
+\printbibliography[type=article,keyword=directed_graphs,heading=none]
+
+\nouvellesoussection{Models of multiplex graphs}
+\printbibliography[type=article,keyword=multiplex_graphs,heading=none]
+
+\nouvellesoussection{Models of weighted graphs}
+\printbibliography[type=article,keyword=weighted_graphs,heading=none]
+
+\nouvellesoussection{Models of undirected graphs in higher dimensions}
+\printbibliography[type=article,keyword=higher_dimensions,heading=none]
+
+\nouvellesoussection{Models of growing graphs}
+\printbibliography[type=article,keyword=growing_graphs,heading=none]
+
+\nouvellesoussection{Small world, clustering, renormalization and navigability}
+\defbibfilter{filter1}{keyword=navigability or keyword=renormalization or keyword=clustering}  % https://tex.stackexchange.com/questions/367083/use-multiple-keywords-or-in-printbibliography-to-filter-the-bibliography
+\printbibliography[type=article,filter=filter1,heading=none]
+
+\nouvellesoussection{Embedding algorithms}
+\printbibliography[type=article,keyword=embedding_algorithm,heading=none]
+
+\nouvellesoussection{Generation algorithms}
+\printbibliography[type=article,keyword=generation_algorithm,heading=none]
+
+\nouvellesoussection{Community structure}
+\printbibliography[type=article,keyword=community_structure,heading=none]
+
+\nouvellesoussection{Temporal graphs}
+\printbibliography[type=article,keyword=temporal_graphs,heading=none]
+
+\nouvellesoussection{Applications to real networks}
+\printbibliography[type=article,keyword=real_networks,heading=none]
+
+\nouvellesoussection{Applications to connectomics}
+\printbibliography[type=article,keyword=neurosciences,heading=none]
+
+\nouvellesoussection{Cosmology}
+\printbibliography[type=article,keyword=cosmology,heading=none]
+
+\nouvellesoussection{Review articles}
+\printbibliography[type=article,keyword=review_article,heading=none]
+
+\nouvellesoussection{Theses}
+\printbibliography[type=thesis,heading=none]
+
+
+\newpage
+\nouvellesection{All references}
+\printbibliography[heading=none]
+
+
+\end{document}
